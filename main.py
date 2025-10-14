@@ -1,12 +1,9 @@
-import time
-
-# from machine import UART
-from machine import Pin
-
-pin_0 = Pin(0, Pin.OUT)
-pin_2 = Pin(2, Pin.OUT)
-i = 1
-timeout = 0.1
+# from machine import Pin
+#
+# pin_0 = Pin(0, Pin.OUT)
+# pin_2 = Pin(2, Pin.OUT)
+# i = 1
+# timeout = 0.1
 
 # while True:
 #    pin_0.on()
@@ -18,6 +15,8 @@ timeout = 0.1
 #    i = i + 1
 #    print(i)
 
+
+from machine import UART
 
 baudrate = 115200
 uart = UART(1, baudrate)
