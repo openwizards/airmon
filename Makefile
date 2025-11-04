@@ -1,6 +1,6 @@
 main:
 	mpremote connect auto cp src/main.py :main.py
-	mpremote connect auto cp src/sps30.py :main.py
+	mpremote connect auto cp src/sps30.py :sps30.py
 	mpremote connect auto reset
 attach: main
 	mpremote repl
