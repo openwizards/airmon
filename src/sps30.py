@@ -1,6 +1,6 @@
 import struct
+import time
 from machine import I2C
-
 
 class SPS30:
     def __init__(self, i2c: I2C, addr):
