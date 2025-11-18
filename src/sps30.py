@@ -1,4 +1,4 @@
-import struct
+import struct, time
 from machine import I2C
 
 
