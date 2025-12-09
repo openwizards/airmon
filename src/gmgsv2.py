@@ -92,3 +92,22 @@ class GMGSV2:
             self.preheated()
         self.write_byte(GM_702B)
         return self.read_32()
+
+if __name__ == "__main__":
+    from machine import Pin
+    print("Starting I2C for GMGSV2...")
+    i2c = I2C(0, scl=Pin(0), sda=Pin(16), freq=400000)  # Adjust pins
+
+    gmgsv2 = GMGSV2()
+    gmgsv2.begin(i2c, 0x08)
+
+    print("NO2,C2H5CH,VOC,CO")
+    while True:
+        no2 = gmgsv2.getNO2()
+        c2h5ch = gmgsv2.getC2H5CH()
+        voc = gmgsv2.getVOC()
+        co = gmgsv2.getCO()
+        
+        # Send as CSV string over USB serial
+        print(f"{no2},{c2h5ch},{voc},{co}")
+        time.sleep(0.1)
