@@ -1,15 +1,6 @@
 from machine import I2C
 import time
 
-
-"""
-Multichannel_Gas_GMXXX.py
-Description: A driver for Seeed Grove Multichannel Gas Sensor V2.0.
-Original Author: Hongtai Liu (lht856@foxmail.com)
-Date: 2019-06-18
-License: MIT
-"""
-
 # Constants
 GM_VERF = 3.3  # Default for most boards; adjust if using 5V
 GM_RESOLUTION = 1023
@@ -17,15 +8,14 @@ GM_RESOLUTION = 1023
 # Commands
 GM_102B = 0x01
 GM_302B = 0x03
-# GM_402B = 0x04  # Optional
 GM_502B = 0x05
 GM_702B = 0x07
-# GM_802B = 0x08  # Optional
+
 CHANGE_I2C_ADDR = 0x55
 WARMING_UP = 0xFE
 WARMING_DOWN = 0xFF
 
-class GAS_GMXXX:
+class GMGSV2:
     def __init__(self):
         self.i2c = None
         self.address = None
@@ -64,14 +54,6 @@ class GAS_GMXXX:
         except Exception as e:
             print("I2C read error:", e)
             return 0
-
-    def change_address(self, new_address: int):
-        """Change the I2C address of the sensor."""
-        if new_address == 0 or new_address > 127:
-            new_address = 0x08
-        self.bus.write_i2c_block_data(self.address, CHANGE_I2C_ADDR, [new_address])
-        # Update the object's address so subsequent calls use the new one
-        self.address = new_address
 
     def calc_vol(self, adc, verf=GM_VERF, resolution=GM_RESOLUTION):
         """Convert ADC value to voltage."""
