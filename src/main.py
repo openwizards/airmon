@@ -59,13 +59,14 @@ try:
         v, ppb = sensor_mq131.get_ozone_ppb()
         print(f"{v:.2f} V → {ppb:.0f} ppb O₃")
         # Read GMGSv2
-        no2 = sensor_gmgsv2.getNO2()
-        c2h5ch = sensor_gmgsv2.getC2H5CH()
-        voc = sensor_gmgsv2.getVOC()
-        co = sensor_gmgsv2.getCO()
-        
-        # Send as CSV string over USB serial
-        print(f"{no2},{c2h5ch},{voc},{co}")
+        if sensor_gmgsv2 is not None:
+            no2 = sensor_gmgsv2.getNO2()
+            c2h5ch = sensor_gmgsv2.getC2H5CH()
+            voc = sensor_gmgsv2.getVOC()
+            co = sensor_gmgsv2.getCO()
+            
+            # Send as CSV string over USB serial
+            print(f"{no2},{c2h5ch},{voc},{co}")
         time.sleep(2)
 except KeyboardInterrupt:
     print("Stopping...")
