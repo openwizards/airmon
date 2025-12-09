@@ -2,10 +2,12 @@ import struct
 import time
 from machine import I2C
 
+SPS30_I2C_ADDRESS = 0x69
+
 class SPS30:
-    def __init__(self, i2c: I2C, addr):
+    def __init__(self, i2c: I2C):
         self.i2c = i2c
-        self.addr = addr
+        self.address = SPS30_I2C_ADDRESS
 
     def _send_command(self, cmd, args=b""):
         buf = bytearray()
@@ -15,7 +17,7 @@ class SPS30:
             word = args[i : i + 2]
             buf.extend(word)
             buf.append(self._crc(word))
-        self.i2c.writeto(self.addr, buf)
+        self.i2c.writeto(self.address, buf)
 
     def _crc(self, data):
         crc = 0xFF
@@ -40,7 +42,7 @@ class SPS30:
     def read_data_ready(self):
         self._send_command(0x0202)
         time.sleep(0.005)
-        raw = self.i2c.readfrom(self.addr, 3)
+        raw = self.i2c.readfrom(self.address, 3)
         if self._crc(raw[:2]) != raw[2]:
             raise Exception("CRC mismatch on data ready read")
         return (raw[0] << 8) | raw[1]
@@ -62,7 +64,7 @@ class SPS30:
     def read_measurement(self):
         self._send_command(0x0300)
         time.sleep(0.05)
-        raw = self.i2c.readfrom(self.addr, 60)
+        raw = self.i2c.readfrom(self.address, 60)
         values = []
         aqi_pm25 = ""
         for i in range(0, 60, 6):

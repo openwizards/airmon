@@ -11,22 +11,16 @@ GM_302B = 0x03
 GM_502B = 0x05
 GM_702B = 0x07
 
-CHANGE_I2C_ADDR = 0x55
 WARMING_UP = 0xFE
 WARMING_DOWN = 0xFF
 
 class GMGSV2:
-    def __init__(self):
-        self.i2c = None
-        self.address = None
-        self.is_preheated = False
+    is_preheated = False
 
-    def begin(self, i2c: I2C, address: int):
-        """Initialize I2C bus and sensor address."""
+    def __init__(self, i2c: I2C):
         self.i2c = i2c
-        self.address = address
+        self.address = 0x08
         self.preheated()
-        self.is_preheated = True
 
     def set_address(self, address: int):
         """Set I2C address after initialization."""
@@ -36,24 +30,17 @@ class GMGSV2:
 
     def write_byte(self, cmd: int):
         """Send a single byte command to the sensor."""
-        try:
-            self.i2c.writeto(self.address, bytes([cmd]))
-            time.sleep(0.001)
-        except Exception as e:
-            print("I2C write error:", e)
+        self.i2c.writeto(self.address, bytes([cmd]))
+        time.sleep(0.001)
 
     def read_32(self) -> int:
         """Read 4 bytes from the sensor and return a 32-bit integer."""
-        try:
-            data = self.i2c.readfrom(self.address, 4)
-            value = 0
-            for i, b in enumerate(data):
-                value |= b << (8 * i)
-            time.sleep(0.001)
-            return value
-        except Exception as e:
-            print("I2C read error:", e)
-            return 0
+        data = self.i2c.readfrom(self.address, 4)
+        value = 0
+        for i, b in enumerate(data):
+            value |= b << (8 * i)
+        time.sleep(0.001)
+        return value
 
     def calc_vol(self, adc, verf=GM_VERF, resolution=GM_RESOLUTION):
         """Convert ADC value to voltage."""
@@ -98,8 +85,7 @@ if __name__ == "__main__":
     print("Starting I2C for GMGSV2...")
     i2c = I2C(0, scl=Pin(0), sda=Pin(16), freq=400000)  # Adjust pins
 
-    gmgsv2 = GMGSV2()
-    gmgsv2.begin(i2c, 0x08)
+    gmgsv2 = GMGSV2(i2c, 0x08)
 
     print("NO2,C2H5CH,VOC,CO")
     while True:

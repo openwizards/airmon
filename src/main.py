@@ -5,20 +5,20 @@ from machine import I2C, Pin
 import time
 
 SPS30_FREQ = 100_000
-SPS30_I2C_ADDRESS = 0x69
-SPS30_SDA_PIN = Pin(0)
-SPS30_SCL_PIN = Pin(16)
+SPS30_SDA_PIN = Pin(0, Pin.IN)
+SPS30_SCL_PIN = Pin(16, Pin.IN)
 
 MQ131_PIN = Pin(34, Pin.IN)
 
-GMGSV2_SDA_PIN = Pin(35)
-GMGSV2_SCL_PIN = Pin(36)
+GMGSV2_SDA_PIN = Pin(32, Pin.IN)
+GMGSV2_SCL_PIN = Pin(14, Pin.IN)
+GMGSV2_FREQ = 400_000
 
 # Initialize SPS30
 def init_sps30():
     i2c = I2C(1, freq=SPS30_FREQ, sda=SPS30_SDA_PIN, scl=SPS30_SCL_PIN)
     try:
-        sensor_sps30 = SPS30(i2c=i2c, addr=SPS30_I2C_ADDRESS)
+        sensor_sps30 = SPS30(i2c=i2c)
         sensor_sps30.start_measurement()
     except OSError:
         print("couldn't reach SPS30")
@@ -26,9 +26,9 @@ def init_sps30():
     return sensor_sps30
 
 def init_gmgsv2():
-    i2c = I2C(0, scl=GMGSV2_SCL_PIN, sda=GMGSV2_SDA_PIN, freq=400000)
+    i2c = I2C(0, freq=GMGSV2_FREQ, sda=GMGSV2_SDA_PIN, scl=GMGSV2_SCL_PIN)
     try:
-        sensor_gmgsv2 = GMGSV2(i2c=i2c, addr=SPS30_I2C_ADDRESS)
+        sensor_gmgsv2 = GMGSV2(i2c=i2c)
     except OSError:
         print("couldn't reach GMGSV2")
         return None
@@ -42,10 +42,8 @@ sensor_gmgsv2 = None
 try:
     while True:
         # Read SPS30
-        if sensor_sps30 is None:
-            sensor_sps30 = init_sps30()
-        if sensor_gmgsv2 is None:
-            sensor_gmgsv2 = init_gmgsv2()
+        sensor_sps30 = init_sps30()
+        sensor_gmgsv2 = init_gmgsv2()
         if isinstance(sensor_sps30, SPS30) and sensor_sps30.read_data_ready():
             data = sensor_sps30.read_measurement()
             for k, v in data:
