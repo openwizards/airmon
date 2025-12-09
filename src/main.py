@@ -28,7 +28,7 @@ def init_sps30():
 def init_gmgsv2():
     i2c = I2C(0, scl=GMGSV2_SCL_PIN, sda=GMGSV2_SDA_PIN, freq=400000)
     try:
-        sensor_gmgsv2 = gmgsv2(i2c=i2c, addr=SPS30_I2C_ADDRESS)
+        sensor_gmgsv2 = GMGSV2(i2c=i2c, addr=SPS30_I2C_ADDRESS)
     except OSError:
         print("couldn't reach GMGSV2")
         return None
