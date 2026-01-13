@@ -1,0 +1,12 @@
+{
+    "wifi": {
+        "ssid": "archi-ap",
+        "password": "StrongPassphraseHere"
+    },
+    "mqtt": {
+        "broker": "10.50.0.1",
+        "port": 1883,
+        "user": "user",
+        "password": "password"
+    }
+}

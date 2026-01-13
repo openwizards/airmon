@@ -1,0 +1,22 @@
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.0.20
+    hostname: mosquitto
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883" #default mqtt port
+      - "9001:9001" #default mqtt port for websockets
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/mosquitto.password_file:/mosquitto/config/mosquitto.password_file
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_data:/mosquitto/log
+volumes:
+  mosquitto_data:
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "0.0.0.0"
